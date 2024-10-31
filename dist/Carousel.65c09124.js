@@ -12195,9 +12195,12 @@ var infoDump = document.getElementById("infoDump");
 var progressBar = document.getElementById("progressBar");
 // The get favourites button element.
 var getFavouritesBtn = document.getElementById("getFavouritesBtn");
+// Where to inser the carousel item
+var carousel = document.getElementById('carouselInner');
+var firstOption = document.createElement('option');
 
 // Step 0: Store your API key here for reference and easy access.
-var API_KEY = "";
+var API_KEY = "live_8sXL4C3sTIacOY7cyCfdoHBCV4TSHK4RzHzFwHhXSU3hqDC0ubqeOdoN0OLV1SFe";
 
 /**
  * 1. Create an async function "initialLoad" that does the following:
@@ -12207,6 +12210,43 @@ var API_KEY = "";
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
+var initialLoad = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var data;
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _context.prev = 0;
+          _context.next = 3;
+          return _axios.default.get("https://api.thecatapi.com/v1/breeds");
+        case 3:
+          data = _context.sent;
+          return _context.abrupt("return", data);
+        case 7:
+          _context.prev = 7;
+          _context.t0 = _context["catch"](0);
+          console.log(_context.t0);
+        case 10:
+        case "end":
+          return _context.stop();
+      }
+    }, _callee, null, [[0, 7]]);
+  }));
+  return function initialLoad() {
+    return _ref.apply(this, arguments);
+  };
+}();
+initialLoad().then(function (res) {
+  var response = res.data;
+  firstOption.innerHTML = "Select a Breed";
+  breedSelect.appendChild(firstOption);
+  response.forEach(function (item) {
+    var option = document.createElement('option');
+    option.innerHTML = item.name;
+    option.setAttribute('value', item.id);
+    breedSelect.appendChild(option);
+  });
+});
 
 /**
  * 2. Create an event handler for breedSelect that does the following:
@@ -12222,6 +12262,97 @@ var API_KEY = "";
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
+
+breedSelect.addEventListener('click', handleSelected);
+function handleSelected(e) {
+  e.preventDefault();
+
+  // console.log(e.target.value); 
+
+  var getSelected = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var id, selected;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            id = e.target.value;
+            _context2.prev = 1;
+            _context2.next = 4;
+            return _axios.default.get("https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=".concat(id, "&api_key=").concat(API_KEY));
+          case 4:
+            selected = _context2.sent;
+            return _context2.abrupt("return", selected);
+          case 8:
+            _context2.prev = 8;
+            _context2.t0 = _context2["catch"](1);
+            console.log(_context2.t0);
+          case 11:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[1, 8]]);
+    }));
+    return function getSelected() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  if (e.target.value !== 'Select a Breed') {
+    getSelected().then(function (res) {
+      carousel.innerHTML = "";
+      var breeds = res.data;
+      breeds.forEach(function (breed) {
+        var carouselItem = document.createElement('div');
+        carouselItem.classList.add('carousel-item');
+        var url = breed.url;
+        var template = document.getElementById('carouselItemTemplate');
+        var cardItem = document.createElement('div');
+        cardItem.classList.add('card');
+        var cardImgWrapper = document.createElement('div');
+        cardImgWrapper.classList.add('img-wrapper');
+        var imageItem = document.createElement('img');
+        imageItem.setAttribute('src', url);
+        imageItem.style.display = 'flex';
+        imageItem.style.width = '100%';
+        imageItem.setAttribute('alt', 'image of a cat');
+        cardImgWrapper.appendChild(imageItem);
+        var btn = document.createElement('div');
+        btn.setAttribute('data-img-id', breed.id);
+        btn.classList.add('favourite-button');
+        var svg = document.createElement('svg');
+        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        svg.setAttribute('viewBox', '0 0 512 512');
+        svg.setAttribute('fill', 'currentColor');
+        btn.appendChild(svg);
+        var path = document.createElement('path');
+        path.setAttribute('d', 'M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z');
+        btn.appendChild(path);
+        cardImgWrapper.appendChild(btn);
+        cardItem.appendChild(cardImgWrapper);
+        carouselItem.appendChild(cardItem);
+        carouselItem.classList.add('active');
+        carousel.appendChild(carouselItem);
+
+        // console.log(template); 
+
+        // console.log(breed)
+      });
+    });
+  }
+  firstOption.innerHTML = "Select a Breed";
+  carousel.innerHTML = "";
+  var next = document.querySelector(".next");
+  var prev = document.querySelector(".prev");
+  next.addEventListener("click", function () {
+    var items = document.querySelectorAll(".item");
+    document.querySelector(".slide").appendChild(items[0]);
+    console.log(items);
+  });
+  prev.addEventListener("click", function () {
+    var items = document.querySelectorAll(".item");
+    document.querySelector(".slide").prepend(items[items.length - 1]);
+    console.log(items);
+  });
+}
 
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
@@ -12294,14 +12425,14 @@ function favourite(_x) {
  *   your code should account for this.
  */
 function _favourite() {
-  _favourite = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(imgId) {
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
+  _favourite = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(imgId) {
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
         case 0:
         case "end":
-          return _context.stop();
+          return _context3.stop();
       }
-    }, _callee);
+    }, _callee3);
   }));
   return _favourite.apply(this, arguments);
 }
@@ -12399,7 +12530,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59964" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60756" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
