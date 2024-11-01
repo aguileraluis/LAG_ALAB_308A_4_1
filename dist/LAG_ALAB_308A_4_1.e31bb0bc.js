@@ -12267,12 +12267,10 @@ var progressBar = document.getElementById("progressBar");
 // The get favourites button element.
 var getFavouritesBtn = document.getElementById("getFavouritesBtn");
 // Where to inser the carousel item
-var carousel = document.getElementById('carouselInner');
-var firstOption = document.createElement('option');
-
+var carousel = document.getElementById("carouselInner");
+var firstOption = document.createElement("option");
 // Step 0: Store your API key here for reference and easy access.
 var API_KEY = "live_8sXL4C3sTIacOY7cyCfdoHBCV4TSHK4RzHzFwHhXSU3hqDC0ubqeOdoN0OLV1SFe";
-
 /**
  * 1. Create an async function "initialLoad" that does the following:
  * - Retrieve a list of breeds from the cat API using fetch().
@@ -12281,6 +12279,11 @@ var API_KEY = "live_8sXL4C3sTIacOY7cyCfdoHBCV4TSHK4RzHzFwHhXSU3hqDC0ubqeOdoN0OLV
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
+function clearInfo() {
+  while (infoDump.firstChild) {
+    infoDump.removeChild(infoDump.firstChild);
+  }
+}
 var initialLoad = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
     var data;
@@ -12312,13 +12315,12 @@ initialLoad().then(function (res) {
   firstOption.innerHTML = "Select a Breed";
   breedSelect.appendChild(firstOption);
   response.forEach(function (item) {
-    var option = document.createElement('option');
+    var option = document.createElement("option");
     option.innerHTML = item.name;
-    option.setAttribute('value', item.id);
+    option.setAttribute("value", item.id);
     breedSelect.appendChild(option);
   });
 });
-
 /**
  * 2. Create an event handler for breedSelect that does the following:
  * - Retrieve information on the selected breed from the cat API using fetch().
@@ -12333,8 +12335,7 @@ initialLoad().then(function (res) {
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
-
-breedSelect.addEventListener('click', handleSelected);
+breedSelect.addEventListener("click", handleSelected);
 function handleSelected(e) {
   e.preventDefault();
   var getSelected = /*#__PURE__*/function () {
@@ -12364,15 +12365,63 @@ function handleSelected(e) {
       return _ref2.apply(this, arguments);
     };
   }();
-  if (e.target.value !== 'Select a Breed') {
+  if (e.target.value !== "Select a Breed") {
     getSelected().then(function (res) {
       Carousel.clear();
+      clearInfo();
       var breeds = res.data;
+      var table = document.createElement("table");
+      var cat = breeds[0].breeds[0];
+      var keys = Object.keys(cat);
+      var values = Object.values(cat);
+      console.log(keys.length);
+      var _loop = function _loop() {
+        var tableHead = document.createElement("thead");
+        var tableBody = document.createElement("tbody");
+        var bodyTableRow = document.createElement("tr");
+        bodyTableRow.style.backgroundColor = "lightblue";
+        var tableRow = document.createElement("tr");
+        tableRow.style.backgroundColor = "brown";
+        tableRow.style.color = "white";
+        var keysTemp = keys.slice(i, i + 4);
+        var valuesTemp = values.slice(i, i + 4);
+        console.log(keysTemp);
+        // console.log(valuesTemp);
+        keysTemp.forEach(function (key, index) {
+          var tableHeadItem = document.createElement("th");
+          tableHeadItem.style.textAlign = "center";
+          var tableData = document.createElement("td");
+          tableData.style.textAlign = "center";
+          if (key === "weight") {
+            var imperial = valuesTemp[index].imperial;
+            var metric = valuesTemp[index].metric;
+            tableHeadItem.innerHTML = key;
+            tableData.innerHTML = "imperial: ".concat(imperial, ", metric: ").concat(metric);
+          } else {
+            tableHeadItem.innerHTML = key;
+            tableData.innerHTML = valuesTemp[index];
+          }
+          tableRow.appendChild(tableHeadItem);
+          bodyTableRow.appendChild(tableData);
+        });
+        tableHead.appendChild(tableRow);
+        table.appendChild(tableHead);
+        tableBody.appendChild(bodyTableRow);
+        table.appendChild(tableBody);
+      };
+      for (var i = 0; i <= keys.length; i += 5) {
+        _loop();
+      }
+      infoDump.appendChild(table);
+      console.log(table);
       breeds.forEach(function (breed) {
         var url = breed.url;
-        var carouselObject = Carousel.createCarouselItem(url, 'image of a cat', breed.id);
+        var carouselObject = Carousel.createCarouselItem(url, "image of a cat", breed.id);
         Carousel.appendCarousel(carouselObject);
         firstOption.innerHTML = breed.breeds[0].name;
+        // let name = (breed.breeds[0]);
+        // let info = (breed.breeds[0]);
+        // console.log(info);
         Carousel.start();
       });
     });
@@ -12488,7 +12537,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54599" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52184" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
