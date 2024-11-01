@@ -16,6 +16,7 @@ export function createCarouselItem(imgSrc, imgAlt, imgId) {
 
   return clone;
 }
+// console.log(Carousel.createCarouselItem())
 
 export function clear() {
   const carousel = document.querySelector("#carouselInner");
@@ -43,7 +44,7 @@ export function start() {
     });
     const carouselWidth = $(".carousel-inner")[0].scrollWidth;
     const cardWidth = $(".carousel-item").width();
-    let scrollPosition = 0;
+    let scrollPosition = 4;
     $("#carouselExampleControls .carousel-control-next").unbind();
     $("#carouselExampleControls .carousel-control-next").on(
       "click",

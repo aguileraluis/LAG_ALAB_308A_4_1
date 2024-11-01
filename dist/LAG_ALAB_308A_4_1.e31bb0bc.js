@@ -6934,6 +6934,8 @@ function createCarouselItem(imgSrc, imgAlt, imgId) {
   });
   return clone;
 }
+// console.log(Carousel.createCarouselItem())
+
 function clear() {
   var carousel = document.querySelector("#carouselInner");
   while (carousel.firstChild) {
@@ -6954,7 +6956,7 @@ function start() {
     });
     var carouselWidth = $(".carousel-inner")[0].scrollWidth;
     var cardWidth = $(".carousel-item").width();
-    var scrollPosition = 0;
+    var scrollPosition = 4;
     $("#carouselExampleControls .carousel-control-next").unbind();
     $("#carouselExampleControls .carousel-control-next").on("click", function () {
       if (scrollPosition < carouselWidth - cardWidth * 4) {
@@ -12335,9 +12337,6 @@ initialLoad().then(function (res) {
 breedSelect.addEventListener('click', handleSelected);
 function handleSelected(e) {
   e.preventDefault();
-
-  // console.log(e.target.value); 
-
   var getSelected = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
       var id, selected;
@@ -12367,60 +12366,19 @@ function handleSelected(e) {
   }();
   if (e.target.value !== 'Select a Breed') {
     getSelected().then(function (res) {
-      carousel.innerHTML = "";
+      Carousel.clear();
       var breeds = res.data;
       breeds.forEach(function (breed) {
-        var carouselItem = document.createElement('div');
-        carouselItem.classList.add('carousel-item');
         var url = breed.url;
-        var template = document.getElementById('carouselItemTemplate');
-        var cardItem = document.createElement('div');
-        cardItem.classList.add('card');
-        var cardImgWrapper = document.createElement('div');
-        cardImgWrapper.classList.add('img-wrapper');
-        var imageItem = document.createElement('img');
-        imageItem.setAttribute('src', url);
-        imageItem.style.display = 'flex';
-        imageItem.style.width = '100%';
-        imageItem.setAttribute('alt', 'image of a cat');
-        cardImgWrapper.appendChild(imageItem);
-        var btn = document.createElement('div');
-        btn.setAttribute('data-img-id', breed.id);
-        btn.classList.add('favourite-button');
-        var svg = document.createElement('svg');
-        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        svg.setAttribute('viewBox', '0 0 512 512');
-        svg.setAttribute('fill', 'currentColor');
-        btn.appendChild(svg);
-        var path = document.createElement('path');
-        path.setAttribute('d', 'M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z');
-        btn.appendChild(path);
-        cardImgWrapper.appendChild(btn);
-        cardItem.appendChild(cardImgWrapper);
-        carouselItem.appendChild(cardItem);
-        carouselItem.classList.add('active');
-        carousel.appendChild(carouselItem);
-
-        // console.log(template); 
-
-        // console.log(breed)
+        var carouselObject = Carousel.createCarouselItem(url, 'image of a cat', breed.id);
+        Carousel.appendCarousel(carouselObject);
+        firstOption.innerHTML = breed.breeds[0].name;
+        Carousel.start();
       });
     });
+    e.target.value = "Select a Breed";
+    firstOption.innerHTML = "Select a Breed";
   }
-  firstOption.innerHTML = "Select a Breed";
-  carousel.innerHTML = "";
-  var next = document.querySelector(".next");
-  var prev = document.querySelector(".prev");
-  next.addEventListener("click", function () {
-    var items = document.querySelectorAll(".item");
-    document.querySelector(".slide").appendChild(items[0]);
-    console.log(items);
-  });
-  prev.addEventListener("click", function () {
-    var items = document.querySelectorAll(".item");
-    document.querySelector(".slide").prepend(items[items.length - 1]);
-    console.log(items);
-  });
 }
 
 /**
@@ -12530,7 +12488,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60756" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54599" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
