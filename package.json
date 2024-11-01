@@ -1,5 +1,6 @@
 {
   "name": "ajax-fetch-and-axios-lab-template",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.html",

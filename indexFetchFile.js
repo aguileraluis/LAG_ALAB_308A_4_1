@@ -28,25 +28,27 @@ const API_KEY =
   }
 }
 
-const initialLoad = async () => {
+async function initialLoad() {
   try {
-    const data = await axios.get(`https://api.thecatapi.com/v1/breeds`);
-    return data;
+    const dataResponse = await fetch (`https://api.thecatapi.com/v1/breeds`);
+    const data = await dataResponse.json(); 
+    firstOption.innerHTML = "Select a Breed";
+    breedSelect.appendChild(firstOption);
+    data.forEach((item) => {
+      const option = document.createElement("option");
+      option.innerHTML = item.name;
+      option.setAttribute("value", item.id);
+      breedSelect.appendChild(option);
+  });
+
   } catch (err) {
     console.log(err);
   }
 };
-initialLoad().then((res) => {
-  let response = res.data;
-  firstOption.innerHTML = "Select a Breed";
-  breedSelect.appendChild(firstOption);
-  response.forEach((item) => {
-    const option = document.createElement("option");
-    option.innerHTML = item.name;
-    option.setAttribute("value", item.id);
-    breedSelect.appendChild(option);
-  });
-});
+
+initialLoad(); 
+
+
 /**
  * 2. Create an event handler for breedSelect that does the following:
  * - Retrieve information on the selected breed from the cat API using fetch().
@@ -67,9 +69,10 @@ function handleSelected(e) {
   const getSelected = async () => {
     let id = e.target.value;
     try {
-      const selected = await axios.get(
+      const data = await fetch(
         `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${id}&api_key=${API_KEY}`
       );
+      const selected = await data.json(); 
       return selected;
     } catch (err) {
       console.log(err);
@@ -78,9 +81,10 @@ function handleSelected(e) {
 
   if (e.target.value !== "Select a Breed") {
     getSelected().then((res) => {
+   
       Carousel.clear();
       clearInfo(); 
-      let breeds = res.data;
+      let breeds = res;
       let table = document.createElement("table");
 
       let cat = breeds[0].breeds[0];

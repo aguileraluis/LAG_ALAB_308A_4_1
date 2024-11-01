@@ -30,13 +30,16 @@
   
   </head>
 
-  <body>
+  <body id="bodyId">
     <!-- Progress Bar-->
-    <div
+     <div id="boxBox">
+      <div
       id="progressBar"
       class="progress-bar-top"
       style="transition: width 1s ease"
     ></div>
+     </div>
+    
 
     <!-- Breed Selection -->
     <h2 class="w-100 text-center mt-5">Select a Breed</h2>
@@ -46,7 +49,7 @@
       class="form-select form-select-lg my-1 mx-auto"
       aria-label="form-select-lg"
     ></select>
-    <div class="d-flex">
+    <div class="d-flex" id="buttonBox">
       <button id="getFavouritesBtn" class="btn btn-success mx-auto mb-5">
         Get Favorites
       </button>
@@ -112,6 +115,6 @@
     </template>
     <!-- Carousel Item Template -->
     <script type="text/javascript" src="Carousel.js"></script>
-    <script type="text/javascript" src="index.js"></script>
+    <script type="text/javascript" src="indexFetch.js"></script>
   </body>
 </html>

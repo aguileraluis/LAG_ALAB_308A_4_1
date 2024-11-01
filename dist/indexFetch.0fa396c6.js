@@ -6908,7 +6908,78 @@ enableDismissTrigger(Toast);
  */
 
 defineJQueryPlugin(Toast);
-},{"@popperjs/core":"node_modules/@popperjs/core/lib/index.js"}],"node_modules/axios/lib/helpers/bind.js":[function(require,module,exports) {
+},{"@popperjs/core":"node_modules/@popperjs/core/lib/index.js"}],"Carousel.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.appendCarousel = appendCarousel;
+exports.clear = clear;
+exports.createCarouselItem = createCarouselItem;
+exports.start = start;
+var bootstrap = _interopRequireWildcard(require("bootstrap"));
+var _indexFetch = require("./indexFetch.js");
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function createCarouselItem(imgSrc, imgAlt, imgId) {
+  var template = document.querySelector("#carouselItemTemplate");
+  var clone = template.content.firstElementChild.cloneNode(true);
+  var img = clone.querySelector("img");
+  img.src = imgSrc;
+  img.alt = imgAlt;
+  var favBtn = clone.querySelector(".favourite-button");
+  favBtn.addEventListener("click", function () {
+    (0, _indexFetch.favourite)(imgId);
+  });
+  return clone;
+}
+// console.log(Carousel.createCarouselItem())
+
+function clear() {
+  var carousel = document.querySelector("#carouselInner");
+  while (carousel.firstChild) {
+    carousel.removeChild(carousel.firstChild);
+  }
+}
+function appendCarousel(element) {
+  var carousel = document.querySelector("#carouselInner");
+  var activeItem = document.querySelector(".carousel-item.active");
+  if (!activeItem) element.classList.add("active");
+  carousel.appendChild(element);
+}
+function start() {
+  var multipleCardCarousel = document.querySelector("#carouselExampleControls");
+  if (window.matchMedia("(min-width: 768px)").matches) {
+    var carousel = new bootstrap.Carousel(multipleCardCarousel, {
+      interval: false
+    });
+    var carouselWidth = $(".carousel-inner")[0].scrollWidth;
+    var cardWidth = $(".carousel-item").width();
+    var scrollPosition = 4;
+    $("#carouselExampleControls .carousel-control-next").unbind();
+    $("#carouselExampleControls .carousel-control-next").on("click", function () {
+      if (scrollPosition < carouselWidth - cardWidth * 4) {
+        scrollPosition += cardWidth;
+        $("#carouselExampleControls .carousel-inner").animate({
+          scrollLeft: scrollPosition
+        }, 600);
+      }
+    });
+    $("#carouselExampleControls .carousel-control-prev").unbind();
+    $("#carouselExampleControls .carousel-control-prev").on("click", function () {
+      if (scrollPosition > 0) {
+        scrollPosition -= cardWidth;
+        $("#carouselExampleControls .carousel-inner").animate({
+          scrollLeft: scrollPosition
+        }, 600);
+      }
+    });
+  } else {
+    $(multipleCardCarousel).addClass("slide");
+  }
+}
+},{"bootstrap":"node_modules/bootstrap/dist/js/bootstrap.esm.js","./indexFetch.js":"indexFetch.js"}],"node_modules/axios/lib/helpers/bind.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -12470,78 +12541,7 @@ function _favourite() {
   return _favourite.apply(this, arguments);
 }
 getFavouritesBtn.addEventListener("click", favourite);
-},{"./Carousel.js":"Carousel.js","axios":"node_modules/axios/index.js"}],"Carousel.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.appendCarousel = appendCarousel;
-exports.clear = clear;
-exports.createCarouselItem = createCarouselItem;
-exports.start = start;
-var bootstrap = _interopRequireWildcard(require("bootstrap"));
-var _indexFetch = require("./indexFetch.js");
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function createCarouselItem(imgSrc, imgAlt, imgId) {
-  var template = document.querySelector("#carouselItemTemplate");
-  var clone = template.content.firstElementChild.cloneNode(true);
-  var img = clone.querySelector("img");
-  img.src = imgSrc;
-  img.alt = imgAlt;
-  var favBtn = clone.querySelector(".favourite-button");
-  favBtn.addEventListener("click", function () {
-    (0, _indexFetch.favourite)(imgId);
-  });
-  return clone;
-}
-// console.log(Carousel.createCarouselItem())
-
-function clear() {
-  var carousel = document.querySelector("#carouselInner");
-  while (carousel.firstChild) {
-    carousel.removeChild(carousel.firstChild);
-  }
-}
-function appendCarousel(element) {
-  var carousel = document.querySelector("#carouselInner");
-  var activeItem = document.querySelector(".carousel-item.active");
-  if (!activeItem) element.classList.add("active");
-  carousel.appendChild(element);
-}
-function start() {
-  var multipleCardCarousel = document.querySelector("#carouselExampleControls");
-  if (window.matchMedia("(min-width: 768px)").matches) {
-    var carousel = new bootstrap.Carousel(multipleCardCarousel, {
-      interval: false
-    });
-    var carouselWidth = $(".carousel-inner")[0].scrollWidth;
-    var cardWidth = $(".carousel-item").width();
-    var scrollPosition = 4;
-    $("#carouselExampleControls .carousel-control-next").unbind();
-    $("#carouselExampleControls .carousel-control-next").on("click", function () {
-      if (scrollPosition < carouselWidth - cardWidth * 4) {
-        scrollPosition += cardWidth;
-        $("#carouselExampleControls .carousel-inner").animate({
-          scrollLeft: scrollPosition
-        }, 600);
-      }
-    });
-    $("#carouselExampleControls .carousel-control-prev").unbind();
-    $("#carouselExampleControls .carousel-control-prev").on("click", function () {
-      if (scrollPosition > 0) {
-        scrollPosition -= cardWidth;
-        $("#carouselExampleControls .carousel-inner").animate({
-          scrollLeft: scrollPosition
-        }, 600);
-      }
-    });
-  } else {
-    $(multipleCardCarousel).addClass("slide");
-  }
-}
-},{"bootstrap":"node_modules/bootstrap/dist/js/bootstrap.esm.js","./indexFetch.js":"indexFetch.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./Carousel.js":"Carousel.js","axios":"node_modules/axios/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -12710,5 +12710,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","Carousel.js"], null)
-//# sourceMappingURL=/Carousel.65c09124.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","indexFetch.js"], null)
+//# sourceMappingURL=/indexFetch.0fa396c6.js.map
