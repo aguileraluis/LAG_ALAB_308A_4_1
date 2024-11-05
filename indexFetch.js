@@ -8,6 +8,7 @@ const infoDump = document.getElementById("infoDump");
 const progressBar = document.getElementById("progressBar");
 // The get favourites button element.
 const getFavouritesBtn = document.getElementById("getFavouritesBtn");
+getFavouritesBtn.addEventListener("click", seeFavorites);
 // Where to inser the carousel item
 const carousel = document.getElementById("carouselInner");
 const firstOption = document.createElement("option");
@@ -166,90 +167,87 @@ function handleSelected(e) {
 }
 
 export async function favourite(imgId) {
-    async function getFavorites() {
-      try {
-        axios.interceptors.request.use((config) => {
-          console.log("Request sent.");
-          config.metadata = { requestTime: new Date() };
-          return config;
-        });
+  async function getFavorites() {
+    try {
+      axios.interceptors.request.use((config) => {
+        console.log("Request sent.");
+        config.metadata = { requestTime: new Date() };
+        return config;
+      });
 
-        let rawBody = JSON.stringify({
-                "image_id": imgId, 
-                "sub_id" : 'user-12345'
-          
-              })
-          
-              const response = await fetch(
-                'https://api.thecatapi.com/v1/favourites',{
-                    method: 'POST',
-                    headers:{
-                        "content-type":"application/json",
-                        'x-api-key': API_KEY
-                    }, 
-                    body: rawBody
-                });
-                const favourites = await response.json();
-              
-        axios.interceptors.response.use(
-          (response) => {
-            const responseTime = new Date();
-            const totalTime =
-              responseTime - response.config.metadata.requestTime;
-            console.log(`It took ${totalTime} milliseconds.`);
-            body.style.cursor = "default";
-            return response;
-          },
-          (error) => {
-            // Failure: anything outside of status 2XX
-            console.log("Unsuccessful response...");
-            throw error;
-          }
-        );
+      let rawBody = JSON.stringify({
+        image_id: imgId,
+        sub_id: "user-12345",
+      });
 
-        
-        return favourites;
-      } catch (err) {
-        console.log(err);
-        alert('Oops, you already added this cat to your favorites! Pick another cat.')
-      }
+      const response = await fetch("https://api.thecatapi.com/v1/favourites", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": API_KEY,
+        },
+        body: rawBody,
+      });
+      const favourites = await response.json();
+
+      axios.interceptors.response.use(
+        (response) => {
+          const responseTime = new Date();
+          const totalTime = responseTime - response.config.metadata.requestTime;
+          console.log(`It took ${totalTime} milliseconds.`);
+          body.style.cursor = "default";
+          return response;
+        },
+        (error) => {
+          // Failure: anything outside of status 2XX
+          console.log("Unsuccessful response...");
+          throw error;
+        }
+      );
+
+      return favourites;
+    } catch (err) {
+      console.log(err);
+      alert(
+        "Oops, you already added this cat to your favorites! Pick another cat."
+      );
     }
-    getFavorites().then((value) => {
-      console.log(value); 
-    });
+  }
+  getFavorites().then((value) => {
+    console.log(value);
+  });
 }
 
 async function seeFavorites() {
-  Carousel.clear(); 
+  Carousel.clear();
   try {
     const response = await fetch(
-      'https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC',{
-          headers:{
-              "content-type":"application/json",
-              'x-api-key': API_KEY
-          }
-      });
-      const favourites = await response.json(); 
+      "https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC",
+      {
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": API_KEY,
+        },
+      }
+    );
+    const favourites = await response.json();
 
     for (let i = 0; i <= favourites.length; i++) {
-      let image = (favourites[i].image); 
+      let image = favourites[i].image;
 
-      let id = image.id; 
+      let id = image.id;
       let url = image.url;
 
-        let carouselObject = Carousel.createCarouselItem(
-          url,
-          "image of a cat",
-          id
-        );
-        Carousel.appendCarousel(carouselObject);
-        Carousel.start();
-        infoDump.innerHTML = ""; 
-      }
+      let carouselObject = Carousel.createCarouselItem(
+        url,
+        "image of a cat",
+        id
+      );
+      Carousel.appendCarousel(carouselObject);
+      Carousel.start();
+      infoDump.innerHTML = "";
+    }
   } catch (err) {
     console.log(err);
   }
-
 }
-
-getFavouritesBtn.addEventListener("click", seeFavorites);

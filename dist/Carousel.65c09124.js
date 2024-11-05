@@ -12195,6 +12195,7 @@ var infoDump = document.getElementById("infoDump");
 var progressBar = document.getElementById("progressBar");
 // The get favourites button element.
 var getFavouritesBtn = document.getElementById("getFavouritesBtn");
+getFavouritesBtn.addEventListener("click", seeFavorites);
 // Where to inser the carousel item
 var carousel = document.getElementById("carouselInner");
 var firstOption = document.createElement("option");
@@ -12401,15 +12402,15 @@ function _favourite() {
                       return config;
                     });
                     rawBody = JSON.stringify({
-                      "image_id": imgId,
-                      "sub_id": 'user-12345'
+                      image_id: imgId,
+                      sub_id: "user-12345"
                     });
                     _context3.next = 5;
-                    return fetch('https://api.thecatapi.com/v1/favourites', {
-                      method: 'POST',
+                    return fetch("https://api.thecatapi.com/v1/favourites", {
+                      method: "POST",
                       headers: {
                         "content-type": "application/json",
-                        'x-api-key': API_KEY
+                        "x-api-key": API_KEY
                       },
                       body: rawBody
                     });
@@ -12419,25 +12420,6 @@ function _favourite() {
                     return response.json();
                   case 8:
                     favourites = _context3.sent;
-                    // for (let i = 0; i <= favoritesArray.length; i++) {
-                    //   let catID = favoritesArray[i];
-                    //   if (catID !== undefined) {
-                    //     const data = await axios.get(
-                    //       `https://api.thecatapi.com/v1/images/${catID}`
-                    //     );
-                    //     let catItem = data.data; 
-                    //     let url = catItem.url;
-                    //     let carouselObject = Carousel.createCarouselItem(
-                    //       url,
-                    //       "image of a cat",
-                    //       imgId
-                    //     );
-                    //     Carousel.appendCarousel(carouselObject);
-                    //     Carousel.start();
-                    //     infoDump.innerHTML = ""; 
-                    //   }
-                    // }
-
                     _axios.default.interceptors.response.use(function (response) {
                       var responseTime = new Date();
                       var totalTime = responseTime - response.config.metadata.requestTime;
@@ -12454,7 +12436,7 @@ function _favourite() {
                     _context3.prev = 13;
                     _context3.t0 = _context3["catch"](0);
                     console.log(_context3.t0);
-                    alert('Oops, you already added this cat to your favorites! Pick another cat.');
+                    alert("Oops, you already added this cat to your favorites! Pick another cat.");
                   case 17:
                   case "end":
                     return _context3.stop();
@@ -12479,22 +12461,7 @@ function _favourite() {
 }
 function seeFavorites() {
   return _seeFavorites.apply(this, arguments);
-} // export async function favourite(imgId) {
-//   try {
-//     let rawBody = JSON.stringify({
-//       "image_id": imgId, 
-//     })
-//     const newFavourite = await fetch('https://api.thecatapi.com/v1/favourites', 
-//       {
-//         method: 'POST', 
-//         headers: { 'x-api-key' : `${API_KEY}`}, 
-//         body: rawBody
-//       }
-//     )
-//   } catch (error) {
-//     console.log(error); 
-//   }
-// }
+}
 function _seeFavorites() {
   _seeFavorites = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
     var response, favourites, i, image, id, url, carouselObject;
@@ -12504,10 +12471,10 @@ function _seeFavorites() {
           Carousel.clear();
           _context5.prev = 1;
           _context5.next = 4;
-          return fetch('https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC', {
+          return fetch("https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC", {
             headers: {
               "content-type": "application/json",
-              'x-api-key': API_KEY
+              "x-api-key": API_KEY
             }
           });
         case 4:
@@ -12539,7 +12506,6 @@ function _seeFavorites() {
   }));
   return _seeFavorites.apply(this, arguments);
 }
-getFavouritesBtn.addEventListener("click", seeFavorites);
 },{"./Carousel.js":"Carousel.js","axios":"node_modules/axios/index.js"}],"Carousel.js":[function(require,module,exports) {
 "use strict";
 
@@ -12636,7 +12602,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55040" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57244" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
