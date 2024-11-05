@@ -280,25 +280,4 @@ async function seeFavorites() {
 
 }
 
-
-// export async function favourite(imgId) {
-//   try {
-//     let rawBody = JSON.stringify({
-//       "image_id": imgId, 
-
-//     })
-
-//     const newFavourite = await fetch('https://api.thecatapi.com/v1/favourites', 
-//       {
-//         method: 'POST', 
-//         headers: { 'x-api-key' : `${API_KEY}`}, 
-//         body: rawBody
-//       }
-//     )
-//   } catch (error) {
-//     console.log(error); 
-//   }
-  
-// }
-
 getFavouritesBtn.addEventListener("click", seeFavorites);
