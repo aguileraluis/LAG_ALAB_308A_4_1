@@ -190,35 +190,7 @@ export async function favourite(imgId) {
                     body: rawBody
                 });
                 const favourites = await response.json();
-                
-
-        // for (let i = 0; i <= favoritesArray.length; i++) {
-        //   let catID = favoritesArray[i];
-        //   if (catID !== undefined) {
-        //     const data = await axios.get(
-        //       `https://api.thecatapi.com/v1/images/${catID}`
-        //     );
-        //     let catItem = data.data; 
-        //     let url = catItem.url;
-        //     let carouselObject = Carousel.createCarouselItem(
-        //       url,
-        //       "image of a cat",
-        //       imgId
-        //     );
-        //     Carousel.appendCarousel(carouselObject);
-        //     Carousel.start();
-        //     infoDump.innerHTML = ""; 
-        //   }
-        // }
-
-
-
-
-
-
-
-
-
+              
         axios.interceptors.response.use(
           (response) => {
             const responseTime = new Date();
