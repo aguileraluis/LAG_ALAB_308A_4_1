@@ -164,12 +164,8 @@ function handleSelected(e) {
     firstOption.innerHTML = "Select a Breed";
   }
 }
+
 export async function favourite(imgId) {
-  if (typeof imgId === "string") {
-    favoritesArray.push(imgId);
-    console.log(favoritesArray);
-  } else if (typeof (imgId === "object")) {
-    Carousel.clear();
     async function getFavorites() {
       try {
         axios.interceptors.request.use((config) => {
@@ -177,24 +173,52 @@ export async function favourite(imgId) {
           config.metadata = { requestTime: new Date() };
           return config;
         });
-        for (let i = 0; i <= favoritesArray.length; i++) {
-          let catID = favoritesArray[i];
-          if (catID !== undefined) {
-            const data = await axios.get(
-              `https://api.thecatapi.com/v1/images/${catID}`
-            );
-            let catItem = data.data; 
-            let url = catItem.url;
-            let carouselObject = Carousel.createCarouselItem(
-              url,
-              "image of a cat",
-              imgId
-            );
-            Carousel.appendCarousel(carouselObject);
-            Carousel.start();
-            infoDump.innerHTML = ""; 
-          }
-        }
+
+        let rawBody = JSON.stringify({
+                "image_id": imgId, 
+                "sub_id" : 'user-12345'
+          
+              })
+          
+              const response = await fetch(
+                'https://api.thecatapi.com/v1/favourites',{
+                    method: 'POST',
+                    headers:{
+                        "content-type":"application/json",
+                        'x-api-key': API_KEY
+                    }, 
+                    body: rawBody
+                });
+                const favourites = await response.json();
+                
+
+        // for (let i = 0; i <= favoritesArray.length; i++) {
+        //   let catID = favoritesArray[i];
+        //   if (catID !== undefined) {
+        //     const data = await axios.get(
+        //       `https://api.thecatapi.com/v1/images/${catID}`
+        //     );
+        //     let catItem = data.data; 
+        //     let url = catItem.url;
+        //     let carouselObject = Carousel.createCarouselItem(
+        //       url,
+        //       "image of a cat",
+        //       imgId
+        //     );
+        //     Carousel.appendCarousel(carouselObject);
+        //     Carousel.start();
+        //     infoDump.innerHTML = ""; 
+        //   }
+        // }
+
+
+
+
+
+
+
+
+
         axios.interceptors.response.use(
           (response) => {
             const responseTime = new Date();
@@ -210,11 +234,71 @@ export async function favourite(imgId) {
             throw error;
           }
         );
+
+        
+        return favourites;
       } catch (err) {
         console.log(err);
+        alert('Oops, you already added this cat to your favorites! Pick another cat.')
       }
     }
-    getFavorites();
-  }
+    getFavorites().then((value) => {
+      console.log(value); 
+    });
 }
-getFavouritesBtn.addEventListener("click", favourite);
+
+async function seeFavorites() {
+  Carousel.clear(); 
+  try {
+    const response = await fetch(
+      'https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC',{
+          headers:{
+              "content-type":"application/json",
+              'x-api-key': API_KEY
+          }
+      });
+      const favourites = await response.json(); 
+
+    for (let i = 0; i <= favourites.length; i++) {
+      let image = (favourites[i].image); 
+
+      let id = image.id; 
+      let url = image.url;
+
+        let carouselObject = Carousel.createCarouselItem(
+          url,
+          "image of a cat",
+          id
+        );
+        Carousel.appendCarousel(carouselObject);
+        Carousel.start();
+        infoDump.innerHTML = ""; 
+      }
+  } catch (err) {
+    console.log(err);
+  }
+
+}
+
+
+// export async function favourite(imgId) {
+//   try {
+//     let rawBody = JSON.stringify({
+//       "image_id": imgId, 
+
+//     })
+
+//     const newFavourite = await fetch('https://api.thecatapi.com/v1/favourites', 
+//       {
+//         method: 'POST', 
+//         headers: { 'x-api-key' : `${API_KEY}`}, 
+//         body: rawBody
+//       }
+//     )
+//   } catch (error) {
+//     console.log(error); 
+//   }
+  
+// }
+
+getFavouritesBtn.addEventListener("click", seeFavorites);

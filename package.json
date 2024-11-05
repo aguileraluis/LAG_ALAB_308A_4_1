@@ -2,7 +2,6 @@
   "name": "ajax-fetch-and-axios-lab-template",
   "type": "module",
   "version": "1.0.0",
-  "description": "",
   "main": "index.html",
   "scripts": {
     "start": "parcel index.html --open",
@@ -22,5 +21,8 @@
   "resolutions": {
     "@babel/preset-env": "7.13.8"
   },
-  "keywords": []
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

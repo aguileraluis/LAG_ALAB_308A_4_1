@@ -12457,82 +12457,90 @@ function _favourite() {
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) switch (_context4.prev = _context4.next) {
         case 0:
-          if (typeof imgId === "string") {
-            favoritesArray.push(imgId);
-            console.log(favoritesArray);
-          } else if (_typeof(imgId === "object")) {
-            _getFavorites = function _getFavorites3() {
-              _getFavorites = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-                var i, catID, data, catItem, url, carouselObject;
-                return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-                  while (1) switch (_context3.prev = _context3.next) {
-                    case 0:
-                      _context3.prev = 0;
-                      _axios.default.interceptors.request.use(function (config) {
-                        console.log("Request sent.");
-                        config.metadata = {
-                          requestTime: new Date()
-                        };
-                        return config;
-                      });
-                      i = 0;
-                    case 3:
-                      if (!(i <= favoritesArray.length)) {
-                        _context3.next = 18;
-                        break;
-                      }
-                      catID = favoritesArray[i];
-                      if (!(catID !== undefined)) {
-                        _context3.next = 15;
-                        break;
-                      }
-                      _context3.next = 8;
-                      return _axios.default.get("https://api.thecatapi.com/v1/images/".concat(catID));
-                    case 8:
-                      data = _context3.sent;
-                      catItem = data.data;
-                      url = catItem.url;
-                      carouselObject = Carousel.createCarouselItem(url, "image of a cat", imgId);
-                      Carousel.appendCarousel(carouselObject);
-                      Carousel.start();
-                      infoDump.innerHTML = "";
-                    case 15:
-                      i++;
-                      _context3.next = 3;
-                      break;
-                    case 18:
-                      _axios.default.interceptors.response.use(function (response) {
-                        var responseTime = new Date();
-                        var totalTime = responseTime - response.config.metadata.requestTime;
-                        console.log("It took ".concat(totalTime, " milliseconds."));
-                        body.style.cursor = "default";
-                        return response;
-                      }, function (error) {
-                        // Failure: anything outside of status 2XX
-                        console.log("Unsuccessful response...");
-                        throw error;
-                      });
-                      _context3.next = 24;
-                      break;
-                    case 21:
-                      _context3.prev = 21;
-                      _context3.t0 = _context3["catch"](0);
-                      console.log(_context3.t0);
-                    case 24:
-                    case "end":
-                      return _context3.stop();
-                  }
-                }, _callee3, null, [[0, 21]]);
-              }));
-              return _getFavorites.apply(this, arguments);
-            };
-            getFavorites = function _getFavorites2() {
-              return _getFavorites.apply(this, arguments);
-            };
-            Carousel.clear();
-            getFavorites();
-          }
-        case 1:
+          _getFavorites = function _getFavorites3() {
+            _getFavorites = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+              var rawBody, response, favourites;
+              return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                while (1) switch (_context3.prev = _context3.next) {
+                  case 0:
+                    _context3.prev = 0;
+                    _axios.default.interceptors.request.use(function (config) {
+                      console.log("Request sent.");
+                      config.metadata = {
+                        requestTime: new Date()
+                      };
+                      return config;
+                    });
+                    rawBody = JSON.stringify({
+                      "image_id": imgId,
+                      "sub_id": 'user-12345'
+                    });
+                    _context3.next = 5;
+                    return fetch('https://api.thecatapi.com/v1/favourites', {
+                      method: 'POST',
+                      headers: {
+                        "content-type": "application/json",
+                        'x-api-key': API_KEY
+                      },
+                      body: rawBody
+                    });
+                  case 5:
+                    response = _context3.sent;
+                    _context3.next = 8;
+                    return response.json();
+                  case 8:
+                    favourites = _context3.sent;
+                    // for (let i = 0; i <= favoritesArray.length; i++) {
+                    //   let catID = favoritesArray[i];
+                    //   if (catID !== undefined) {
+                    //     const data = await axios.get(
+                    //       `https://api.thecatapi.com/v1/images/${catID}`
+                    //     );
+                    //     let catItem = data.data; 
+                    //     let url = catItem.url;
+                    //     let carouselObject = Carousel.createCarouselItem(
+                    //       url,
+                    //       "image of a cat",
+                    //       imgId
+                    //     );
+                    //     Carousel.appendCarousel(carouselObject);
+                    //     Carousel.start();
+                    //     infoDump.innerHTML = ""; 
+                    //   }
+                    // }
+
+                    _axios.default.interceptors.response.use(function (response) {
+                      var responseTime = new Date();
+                      var totalTime = responseTime - response.config.metadata.requestTime;
+                      console.log("It took ".concat(totalTime, " milliseconds."));
+                      body.style.cursor = "default";
+                      return response;
+                    }, function (error) {
+                      // Failure: anything outside of status 2XX
+                      console.log("Unsuccessful response...");
+                      throw error;
+                    });
+                    return _context3.abrupt("return", favourites);
+                  case 13:
+                    _context3.prev = 13;
+                    _context3.t0 = _context3["catch"](0);
+                    console.log(_context3.t0);
+                    alert('Oops, you already added this cat to your favorites! Pick another cat.');
+                  case 17:
+                  case "end":
+                    return _context3.stop();
+                }
+              }, _callee3, null, [[0, 13]]);
+            }));
+            return _getFavorites.apply(this, arguments);
+          };
+          getFavorites = function _getFavorites2() {
+            return _getFavorites.apply(this, arguments);
+          };
+          getFavorites().then(function (value) {
+            console.log(value);
+          });
+        case 3:
         case "end":
           return _context4.stop();
       }
@@ -12540,7 +12548,69 @@ function _favourite() {
   }));
   return _favourite.apply(this, arguments);
 }
-getFavouritesBtn.addEventListener("click", favourite);
+function seeFavorites() {
+  return _seeFavorites.apply(this, arguments);
+} // export async function favourite(imgId) {
+//   try {
+//     let rawBody = JSON.stringify({
+//       "image_id": imgId, 
+//     })
+//     const newFavourite = await fetch('https://api.thecatapi.com/v1/favourites', 
+//       {
+//         method: 'POST', 
+//         headers: { 'x-api-key' : `${API_KEY}`}, 
+//         body: rawBody
+//       }
+//     )
+//   } catch (error) {
+//     console.log(error); 
+//   }
+// }
+function _seeFavorites() {
+  _seeFavorites = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+    var response, favourites, i, image, id, url, carouselObject;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
+        case 0:
+          Carousel.clear();
+          _context5.prev = 1;
+          _context5.next = 4;
+          return fetch('https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC', {
+            headers: {
+              "content-type": "application/json",
+              'x-api-key': API_KEY
+            }
+          });
+        case 4:
+          response = _context5.sent;
+          _context5.next = 7;
+          return response.json();
+        case 7:
+          favourites = _context5.sent;
+          for (i = 0; i <= favourites.length; i++) {
+            image = favourites[i].image;
+            id = image.id;
+            url = image.url;
+            carouselObject = Carousel.createCarouselItem(url, "image of a cat", id);
+            Carousel.appendCarousel(carouselObject);
+            Carousel.start();
+            infoDump.innerHTML = "";
+          }
+          _context5.next = 14;
+          break;
+        case 11:
+          _context5.prev = 11;
+          _context5.t0 = _context5["catch"](1);
+          console.log(_context5.t0);
+        case 14:
+        case "end":
+          return _context5.stop();
+      }
+    }, _callee5, null, [[1, 11]]);
+  }));
+  return _seeFavorites.apply(this, arguments);
+}
+getFavouritesBtn.addEventListener("click", seeFavorites);
 },{"./Carousel.js":"Carousel.js","axios":"node_modules/axios/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -12566,7 +12636,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63541" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55040" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
