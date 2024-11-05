@@ -12265,15 +12265,16 @@ var infoDump = document.getElementById("infoDump");
 // The progress bar div element.
 var progressBar = document.getElementById("progressBar");
 // The get favourites button element.
-var getFavouritesBtn = document.getElementById("getFavouritesBtn");
-getFavouritesBtn.addEventListener("click", seeFavorites);
+
+// This is where I was working on the clear favourites functionality.
+// const clearFavourites = document.getElementById('clearFavouritesBtn'); 
+// clearFavourites.addEventListener('click', clearFavorites); 
 // Where to inser the carousel item
 var carousel = document.getElementById("carouselInner");
 var firstOption = document.createElement("option");
 // Step 0: Store your API key here for reference and easy access.
 var API_KEY = "live_8sXL4C3sTIacOY7cyCfdoHBCV4TSHK4RzHzFwHhXSU3hqDC0ubqeOdoN0OLV1SFe";
 var body = document.getElementById("bodyId");
-var favoritesArray = [];
 function clearInfo() {
   while (infoDump.firstChild) {
     infoDump.removeChild(infoDump.firstChild);
@@ -12460,7 +12461,7 @@ function _favourite() {
         case 0:
           _getFavorites = function _getFavorites3() {
             _getFavorites = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-              var rawBody, response, favourites;
+              var rawBody, response, favourites, userResponse;
               return _regeneratorRuntime().wrap(function _callee3$(_context3) {
                 while (1) switch (_context3.prev = _context3.next) {
                   case 0:
@@ -12473,15 +12474,15 @@ function _favourite() {
                       return config;
                     });
                     rawBody = JSON.stringify({
-                      image_id: imgId,
-                      sub_id: "user-12345"
+                      "image_id": imgId,
+                      "sub_id": 'user-12345'
                     });
                     _context3.next = 5;
-                    return fetch("https://api.thecatapi.com/v1/favourites", {
-                      method: "POST",
+                    return fetch('https://api.thecatapi.com/v1/favourites', {
+                      method: 'POST',
                       headers: {
                         "content-type": "application/json",
-                        "x-api-key": API_KEY
+                        'x-api-key': API_KEY
                       },
                       body: rawBody
                     });
@@ -12502,17 +12503,33 @@ function _favourite() {
                       console.log("Unsuccessful response...");
                       throw error;
                     });
+                    console.log(favourites);
                     return _context3.abrupt("return", favourites);
-                  case 13:
-                    _context3.prev = 13;
+                  case 14:
+                    _context3.prev = 14;
                     _context3.t0 = _context3["catch"](0);
                     console.log(_context3.t0);
-                    alert("Oops, you already added this cat to your favorites! Pick another cat.");
-                  case 17:
+                    userResponse = prompt('Oops, you already added this cat to your favorites! Pick another cat. Do yo want to remove it? Type "yes" to remove it.');
+                    if (userResponse === 'yes') {
+
+                      // This is another attempt to delete the favourite cat 
+                      // let url = `https://api.thecatapi.com/v1/favourites/:${imgId}`;
+
+                      // const deleted = await fetch(url, {
+                      //   method: 'DELETE',
+                      //   headers: {
+                      //     "content-type":"application/json",
+                      //     "x-api-key": API_KEY
+                      //   }
+                      // })
+
+                      // return deleted.json(); 
+                    }
+                  case 19:
                   case "end":
                     return _context3.stop();
                 }
-              }, _callee3, null, [[0, 13]]);
+              }, _callee3, null, [[0, 14]]);
             }));
             return _getFavorites.apply(this, arguments);
           };
@@ -12532,7 +12549,39 @@ function _favourite() {
 }
 function seeFavorites() {
   return _seeFavorites.apply(this, arguments);
-}
+} // Manara can you show me how to make this work. I was working on the DELETE favorites item. I think it is suppoosed to work on a single cat item but I'm trying to loop through my favourites array and delete them one by one. Is that possible? Thank yo in advance. 
+// async function clearFavorites() {
+//   Carousel.clear(); 
+//   try {
+//     const response = await fetch(
+//       'https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC',{
+//           headers:{
+//               "content-type":"application/json",
+//               'x-api-key': API_KEY
+//           }
+//       });
+//       const favourites = await response.json(); 
+//       try {
+//         for (let i = 0; i <= favourites.length; i++) {
+//           let id = (favourites[i].id);
+//           let url = `https://api.thecatapi.com/v1/favourites/:${id}`;
+//           const deleted = await fetch(url, {
+//             method: 'DELETE',
+//             headers: {
+//               "content-type":"application/json",
+//               "x-api-key": API_KEY
+//             }
+//           })
+//           const deletedResponse = await deleted;
+//           console.log(JSON.stringify(deletedResponse)); 
+//           }
+//       } catch (error) {
+//         console.log(error); 
+//       }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 function _seeFavorites() {
   _seeFavorites = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
     var response, favourites, i, image, id, url, carouselObject;
@@ -12542,10 +12591,10 @@ function _seeFavorites() {
           Carousel.clear();
           _context5.prev = 1;
           _context5.next = 4;
-          return fetch("https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC", {
+          return fetch('https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC', {
             headers: {
               "content-type": "application/json",
-              "x-api-key": API_KEY
+              'x-api-key': API_KEY
             }
           });
         case 4:
@@ -12577,6 +12626,8 @@ function _seeFavorites() {
   }));
   return _seeFavorites.apply(this, arguments);
 }
+var getFavouritesBtn = document.getElementById("getFavouritesBtn");
+getFavouritesBtn.addEventListener("click", seeFavorites);
 },{"./Carousel.js":"Carousel.js","axios":"node_modules/axios/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -12602,7 +12653,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57244" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58491" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

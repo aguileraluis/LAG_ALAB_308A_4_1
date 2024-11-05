@@ -7,8 +7,11 @@ const infoDump = document.getElementById("infoDump");
 // The progress bar div element.
 const progressBar = document.getElementById("progressBar");
 // The get favourites button element.
-const getFavouritesBtn = document.getElementById("getFavouritesBtn");
-getFavouritesBtn.addEventListener("click", seeFavorites);
+
+
+// This is where I was working on the clear favourites functionality.
+// const clearFavourites = document.getElementById('clearFavouritesBtn'); 
+// clearFavourites.addEventListener('click', clearFavorites); 
 // Where to inser the carousel item
 const carousel = document.getElementById("carouselInner");
 const firstOption = document.createElement("option");
@@ -16,7 +19,7 @@ const firstOption = document.createElement("option");
 const API_KEY =
   "live_8sXL4C3sTIacOY7cyCfdoHBCV4TSHK4RzHzFwHhXSU3hqDC0ubqeOdoN0OLV1SFe";
 let body = document.getElementById("bodyId");
-let favoritesArray = [];
+
 
 function clearInfo() {
   while (infoDump.firstChild) {
@@ -167,87 +170,153 @@ function handleSelected(e) {
 }
 
 export async function favourite(imgId) {
-  async function getFavorites() {
-    try {
-      axios.interceptors.request.use((config) => {
-        console.log("Request sent.");
-        config.metadata = { requestTime: new Date() };
-        return config;
-      });
+    async function getFavorites() {
+      try {
+        axios.interceptors.request.use((config) => {
+          console.log("Request sent.");
+          config.metadata = { requestTime: new Date() };
+          return config;
+        });
 
-      let rawBody = JSON.stringify({
-        image_id: imgId,
-        sub_id: "user-12345",
-      });
+        let rawBody = JSON.stringify({
+                "image_id": imgId, 
+                "sub_id" : 'user-12345'
+          
+              })
+          
+              const response = await fetch(
+                'https://api.thecatapi.com/v1/favourites',{
+                    method: 'POST',
+                    headers:{
+                        "content-type":"application/json",
+                        'x-api-key': API_KEY
+                    }, 
+                    body: rawBody
+                });
+                const favourites = await response.json();
+              
+        axios.interceptors.response.use(
+          (response) => {
+            const responseTime = new Date();
+            const totalTime =
+              responseTime - response.config.metadata.requestTime;
+            console.log(`It took ${totalTime} milliseconds.`);
+            body.style.cursor = "default";
+            return response;
+          },
+          (error) => {
+            // Failure: anything outside of status 2XX
+            console.log("Unsuccessful response...");
+            throw error;
+          }
+        );
 
-      const response = await fetch("https://api.thecatapi.com/v1/favourites", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-api-key": API_KEY,
-        },
-        body: rawBody,
-      });
-      const favourites = await response.json();
+        console.log(favourites); 
 
-      axios.interceptors.response.use(
-        (response) => {
-          const responseTime = new Date();
-          const totalTime = responseTime - response.config.metadata.requestTime;
-          console.log(`It took ${totalTime} milliseconds.`);
-          body.style.cursor = "default";
-          return response;
-        },
-        (error) => {
-          // Failure: anything outside of status 2XX
-          console.log("Unsuccessful response...");
-          throw error;
-        }
-      );
+        
+        return favourites;
+      } catch (err) {
+        console.log(err);
+        let userResponse = prompt('Oops, you already added this cat to your favorites! Pick another cat. Do yo want to remove it? Type "yes" to remove it.'); 
 
-      return favourites;
-    } catch (err) {
-      console.log(err);
-      alert(
-        "Oops, you already added this cat to your favorites! Pick another cat."
-      );
+        if (userResponse === 'yes') {
+
+          // This is another attempt to delete the favourite cat 
+          // let url = `https://api.thecatapi.com/v1/favourites/:${imgId}`;
+    
+          // const deleted = await fetch(url, {
+          //   method: 'DELETE',
+          //   headers: {
+          //     "content-type":"application/json",
+          //     "x-api-key": API_KEY
+          //   }
+          // })
+
+          // return deleted.json(); 
+        } 
+
+
+      }
     }
-  }
-  getFavorites().then((value) => {
-    console.log(value);
-  });
+    getFavorites().then((value) => {
+      console.log(value); 
+    });
 }
 
 async function seeFavorites() {
-  Carousel.clear();
+  Carousel.clear(); 
   try {
     const response = await fetch(
-      "https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC",
-      {
-        headers: {
-          "content-type": "application/json",
-          "x-api-key": API_KEY,
-        },
-      }
-    );
-    const favourites = await response.json();
+      'https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC',{
+          headers:{
+              "content-type":"application/json",
+              'x-api-key': API_KEY
+          }
+      });
+      const favourites = await response.json(); 
 
     for (let i = 0; i <= favourites.length; i++) {
-      let image = favourites[i].image;
+      let image = (favourites[i].image); 
 
-      let id = image.id;
+      let id = image.id; 
       let url = image.url;
 
-      let carouselObject = Carousel.createCarouselItem(
-        url,
-        "image of a cat",
-        id
-      );
-      Carousel.appendCarousel(carouselObject);
-      Carousel.start();
-      infoDump.innerHTML = "";
-    }
+        let carouselObject = Carousel.createCarouselItem(
+          url,
+          "image of a cat",
+          id
+        );
+        Carousel.appendCarousel(carouselObject);
+        Carousel.start();
+        infoDump.innerHTML = ""; 
+      }
   } catch (err) {
     console.log(err);
   }
+
 }
+
+// Manara can you show me how to make this work. I was working on the DELETE favorites item. I think it is suppoosed to work on a single cat item but I'm trying to loop through my favourites array and delete them one by one. Is that possible? Thank yo in advance. 
+// async function clearFavorites() {
+//   Carousel.clear(); 
+//   try {
+//     const response = await fetch(
+//       'https://api.thecatapi.com/v1/favourites?limit=20&sub_id=user-12345&order=DESC',{
+//           headers:{
+//               "content-type":"application/json",
+//               'x-api-key': API_KEY
+//           }
+//       });
+//       const favourites = await response.json(); 
+
+//       try {
+//         for (let i = 0; i <= favourites.length; i++) {
+//           let id = (favourites[i].id);
+  
+//           let url = `https://api.thecatapi.com/v1/favourites/:${id}`;
+    
+//           const deleted = await fetch(url, {
+//             method: 'DELETE',
+//             headers: {
+//               "content-type":"application/json",
+//               "x-api-key": API_KEY
+//             }
+//           })
+    
+//           const deletedResponse = await deleted;
+    
+//           console.log(JSON.stringify(deletedResponse)); 
+//           }
+//       } catch (error) {
+//         console.log(error); 
+//       }
+   
+//   } catch (err) {
+//     console.log(err);
+//   }
+
+// }
+
+
+const getFavouritesBtn = document.getElementById("getFavouritesBtn");
+getFavouritesBtn.addEventListener("click", seeFavorites);
